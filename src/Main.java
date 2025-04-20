@@ -15,12 +15,6 @@ public class Main {
             Solution solution2 = DFS.solve(problem);
             System.out.println(DFS.getNumberOfNodesEvaluated());
             System.out.println(solution2);
-            if(solution1 != null) {
-                for (int j = 0; j < solution1.getSolutionPath().size(); j++) {
-                    if (!solution1.getSolutionPath().get(j).equals(solution2.getSolutionPath().get(j)))
-                        System.out.println("good " + j);
-                }
-            }
 
         }
     }

@@ -26,7 +26,6 @@ public class BreadthFirstSearch extends ASearchingAlgorithm{
         addState(searchable.getStartState());
         while(!isEmpty() && goal == null){
             AState state = popState();
-            numberOfNodesEvaluated ++ ;
             for(AState s : searchable.getAllPossibleStates(state)){
                 if(hashMap.get(s) == null) {
                     if(s.equals(searchable.getGoalState())){
@@ -34,6 +33,7 @@ public class BreadthFirstSearch extends ASearchingAlgorithm{
                         break;
                     }
                     addState(s);
+                    numberOfNodesEvaluated ++ ;
                     hashMap.put(s, Boolean.TRUE);
                 }
             }
