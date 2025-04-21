@@ -24,8 +24,6 @@ public class BestFirstSearch extends BreadthFirstSearch{
 
     @Override
     protected void addState(AState state){
-        if(state.cameFrom != null)
-            state.cost += state.cameFrom.cost;
         priorityQueue.add(state);
     }
 

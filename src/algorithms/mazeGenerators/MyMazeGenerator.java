@@ -14,14 +14,23 @@ public class MyMazeGenerator extends AMazeGenerator {
         Position end = new Position((int)(Math.random() * rows), cols - 1);
         Maze result = new Maze(rows, cols , start , end);
         fillWithOnes(result.getMatrix());
+        //make sure that start is 0
+        result.getMatrix()[start.getRowIndex()][start.getColumnIndex()] = 0 ;
+
         primAlgoImplementation(result.getMatrix());
+        //make sure that end is 0
         result.getMatrix()[end.getRowIndex()][end.getColumnIndex()] = 0 ;
+
+        //in case there is no solution due to end position being surrounded by 1
+        if(cols > 1)
+            result.getMatrix()[end.getRowIndex()][end.getColumnIndex() - 1] = 0 ;
+        else if(rows > 1)
+            result.getMatrix()[end.getRowIndex() - 1][end.getColumnIndex()] = 0 ;
         return result;
     }
 
     private void primAlgoImplementation(int[][] matrix) {
         ArrayList<Position> yetToHandle = new ArrayList<>();
-        matrix[0][0] = 0 ;
         addNeighbours(matrix , yetToHandle , 0 , 0);
         while(!yetToHandle.isEmpty()){
             int randomIndex = (int) (Math.random() * yetToHandle.size());

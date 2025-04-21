@@ -6,39 +6,43 @@ import java.util.LinkedList;
 
 public class BreadthFirstSearch extends ASearchingAlgorithm{
     LinkedList<AState> queue;
-    HashMap<AState , Boolean> hashMap ;
+    HashMap<AState , AState> closedList;
+    HashMap<AState , AState> openList;
     int numberOfNodesEvaluated ;
 
     public BreadthFirstSearch() {
         queue = new LinkedList<>();
-        hashMap = new HashMap<>();
+        closedList = new HashMap<>();
+        openList = new HashMap<>();
         numberOfNodesEvaluated = 0 ;
     }
 
     @Override
     public Solution solve(ISearchable searchable) {
         AState goal = null ;
-
-        if(searchable.getGoalState().equals(searchable.getStartState())){
-            return searchable.getGoalState().backTrack();
+        AState startState = searchable.getStartState() , goalState = searchable.getGoalState() ;
+        if(goalState.equals(startState)){
+            return goalState.backTrack();
         }
-        hashMap.put(searchable.getStartState(), Boolean.TRUE);
-        addState(searchable.getStartState());
+        addState(startState);
+        openList.put(startState, startState);
         while(!isEmpty() && goal == null){
             AState state = popState();
-            for(AState s : searchable.getAllPossibleStates(state)){
-                if(hashMap.get(s) == null) {
-                    if(s.equals(searchable.getGoalState())){
-                        goal = s ;
+            openList.remove(state) ;
+            numberOfNodesEvaluated ++ ;
+            ArrayList<AState> arr = searchable.getAllPossibleStates(state) ;
+            for(AState s : arr){
+                AState closedListResult = closedList.get(s) ;
+                if(closedListResult == null) {
+                    if (s.equals(goalState)) {
+                        goal = s;
                         break;
                     }
-                    addState(s);
-                    numberOfNodesEvaluated ++ ;
-                    hashMap.put(s, Boolean.TRUE);
+                    handleNeighbour(s);
                 }
             }
+            closedList.put(state, state);
         }
-
         if(goal == null)
             return null;
         return goal.backTrack();
@@ -54,6 +58,16 @@ public class BreadthFirstSearch extends ASearchingAlgorithm{
         return numberOfNodesEvaluated ;
     }
 
+    protected void handleNeighbour(AState s){
+        AState openListResult = openList.get(s) ;
+        if(openListResult == null){
+            addState(s);
+            openList.put(s, s);
+        }else{
+            if(openListResult.getCost() > s.getCost())
+                openListResult.setCost(s.getCost());
+        }
+    }
     protected void addState(AState state){
         queue.addFirst(state);
     }
