@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.atpprojectpartc.View.MainConfigurations;
+import org.example.atpprojectpartc.View.StartViewController;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,9 @@ public class HelloApplication extends Application {
         try {
             allStages.add(stage);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/atpprojectpartc/View/StartView.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 480, 480);
+            double width = MainConfigurations.getInstance().getWindowWidth();
+            double height = MainConfigurations.getInstance().getWindowHeight();
+            Scene scene = new Scene(fxmlLoader.load() , width, height);
             stage.setTitle("maze game");
             stage.setScene(scene);
             stage.show();

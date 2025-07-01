@@ -6,11 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.atpprojectpartc.View.StartViewController" fx:id="topLayout">
 
-    <HBox>
-        <Button fx:id="startGame" text="start new maze game" onAction="#startGameAction"/>
+    <HBox spacing="10">
+        <Button fx:id="startGame" text="start new maze game" />
         <Button fx:id="manageServer" text="manage server" onAction="#manageServerAction"/>
         <Button fx:id="pickImage" text="pick images" onAction="#pickImageAction"/>
 

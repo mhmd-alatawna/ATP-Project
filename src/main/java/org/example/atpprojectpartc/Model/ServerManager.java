@@ -9,8 +9,8 @@ import org.example.atpprojectpartc.View.MainConfigurations;
 import java.util.Observable;
 
 public class ServerManager extends Observable implements IServerManagerModel{
-    private Server generatingMazesServer;
-    private Server solvingMazesServer;
+    private static Server generatingMazesServer;
+    private static Server solvingMazesServer;
     private boolean isGeneratingStarted = false ;
     private boolean isSolvingStarted = false ;
     private MainConfigurations config = MainConfigurations.getInstance() ;
@@ -67,5 +67,12 @@ public class ServerManager extends Observable implements IServerManagerModel{
             notifyObservers("solving server stopped");
         }
         isSolvingStarted = false ;
+    }
+
+    public static void shutDownServerManager() {
+        if(generatingMazesServer != null)
+            generatingMazesServer.stop();
+        if(solvingMazesServer != null)
+            solvingMazesServer.stop();
     }
 }

@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.algorithms.search.MazeState;
@@ -62,11 +61,18 @@ public class MyViewController implements IView , Observer {
 
     public MainConfigurations config = MainConfigurations.getInstance();
     private File lastLinkedMazeFile;
-    private File audioFile ;
-    private MediaPlayer mediaPlayer;
+    private Media audioMedia ;
+    private Media winGameMedia ;
+
+    private boolean isFirst = true ;
+    private double firstDiff = -1;
+    private Stage startStage ;
 
     @FXML
     protected void initialize() {
+        audioMedia = new Media(getClass().getResource("/org/example/atpprojectpartc/gameMusic.mp3").toString());
+        winGameMedia = new Media(getClass().getResource("/org/example/atpprojectpartc/winGameMusic.mp3").toString());
+
         MazeDisplayer.rectangleWidth = config.getWindowWidth() / mazeColumns ;
         MazeDisplayer.rectangleHeight = (config.getWindowHeight() - 80) / mazeRows ;
 
@@ -210,6 +216,7 @@ public class MyViewController implements IView , Observer {
                 for (Alert a : HelloApplication.allAlerts) {
                     a.close();
                 }
+                ServerManager.shutDownServerManager();
             }
         });
     }
@@ -221,23 +228,15 @@ public class MyViewController implements IView , Observer {
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.aac")
             );
-
-            audioFile = fileChooser.showOpenDialog(null);
+            audioMedia = new Media(fileChooser.showOpenDialog(null).toURI().toString());
         });
 
         startPlaying.setOnAction(action -> {
-            if (audioFile != null) {
-                Media media = new Media(audioFile.toURI().toString());
-                if(mediaPlayer != null)
-                    mediaPlayer.stop();
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-                mediaPlayer.play();
-            }
+            MediaManager.playAudioRepeat(audioMedia);
         });
 
         stopPlaying.setOnAction(action -> {
-            mediaPlayer.stop();
+            MediaManager.stopAll();
         });
     }
 
@@ -263,6 +262,7 @@ public class MyViewController implements IView , Observer {
         mazeBoardGame.addSolvedListener(new CustomListener() {
             @Override
             public void update() {
+                MediaManager.playAudio(winGameMedia);
                 Stage newStage = new Stage(); // Create new window
                 VBox layout = new VBox(new Label("Hello from the new window!"));
                 layout.setAlignment(Pos.CENTER);
@@ -326,7 +326,7 @@ public class MyViewController implements IView , Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        Change change  = (Change) arg;
+        Change change = (Change) arg;
         switch (change) {
             case mazeGenerated -> {reDrawMaze();}
             case solutionChanged -> {solutionGenerated();}
@@ -346,5 +346,23 @@ public class MyViewController implements IView , Observer {
     }
     public void updatePlayer(){
         mazeBoardGame.updatePlayer(viewModel.getPlayer());
+    }
+    public void stageHeightChanged(double height){
+        if(isFirst) {
+            firstDiff = height - config.getWindowHeight();
+            isFirst = false;
+        }
+        MazeDisplayer.rectangleHeight = (int) (height - firstDiff - 80) / mazeRows ;
+        mazeBoardGame.resizeHeight(height + MazeBoardGame.buttonsHeight - firstDiff - 80);
+        reDrawMaze();
+    }
+    public void stageWidthChanged(double width){
+        MazeDisplayer.rectangleWidth = (int) width / mazeColumns ;
+        mazeBoardGame.resizeWidth(width);
+        reDrawMaze();
+    }
+
+    public void setStartStage(Stage stage){
+        this.startStage = stage ;
     }
 }

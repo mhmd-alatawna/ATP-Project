@@ -118,4 +118,11 @@ public class MazeBoardGame extends VBox {
         this.solvedListener = solvedListener ;
     }
 
+    public void resizeWidth(double width){
+        displayer.setWidth(width);
+    }
+
+    public void resizeHeight(double height){
+        displayer.setHeight(height - buttonsHeight);
+    }
 }
