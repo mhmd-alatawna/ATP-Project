@@ -36,7 +36,7 @@ public class ServerManager extends Observable implements IServerManagerModel{
             this.generatingMazesServer = new Server(config.getGeneratingServerPort() , config.getServerInterval() , generatingStrategy) ;
             new Thread(() -> {generatingMazesServer.start();}).start();
             setChanged();
-            notifyObservers("generating server started");
+            notifyObservers(Change.generatingServerStarted);
         }
         isGeneratingStarted = true ;
     }
@@ -47,7 +47,7 @@ public class ServerManager extends Observable implements IServerManagerModel{
             this.solvingMazesServer = new Server(config.getSolvingServerPort() , config.getServerInterval() , solvingStrategy) ;
             new Thread(() -> {solvingMazesServer.start();}).start();
             setChanged();
-            notifyObservers("solving server started");
+            notifyObservers(Change.solvingServerStarted);
         }
         isSolvingStarted = true ;
     }
@@ -56,7 +56,7 @@ public class ServerManager extends Observable implements IServerManagerModel{
         if(isGeneratingStarted) {
             generatingMazesServer.stop();
             setChanged();
-            notifyObservers("generating server stopped");
+            notifyObservers(Change.generatingServerStopped);
         }
         isGeneratingStarted = false ;
     }
@@ -64,7 +64,7 @@ public class ServerManager extends Observable implements IServerManagerModel{
         if(isSolvingStarted) {
             solvingMazesServer.stop();
             setChanged();
-            notifyObservers("solving server stopped");
+            notifyObservers(Change.solvingServerStopped);
         }
         isSolvingStarted = false ;
     }

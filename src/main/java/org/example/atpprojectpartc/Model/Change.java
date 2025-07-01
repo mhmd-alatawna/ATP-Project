@@ -4,5 +4,10 @@ public enum Change {
     mazeGenerated,
     solutionChanged,
     playerMoved,
-    mazeChanged
+    mazeChanged,
+
+    generatingServerStarted,
+    solvingServerStarted,
+    generatingServerStopped,
+    solvingServerStopped
 }

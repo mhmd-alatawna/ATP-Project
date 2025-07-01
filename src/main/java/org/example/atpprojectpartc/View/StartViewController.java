@@ -19,6 +19,7 @@ import org.example.Server.Server;
 import org.example.Server.ServerStrategyGenerateMaze;
 import org.example.Server.ServerStrategySolveSearchProblem;
 import org.example.atpprojectpartc.HelloApplication;
+import org.example.atpprojectpartc.Model.Change;
 import org.example.atpprojectpartc.Model.ServerManager;
 import org.example.atpprojectpartc.ViewModel.ServerManagerViewModel;
 
@@ -34,13 +35,15 @@ public class StartViewController implements Observer {
     private VBox slidingLayout ;
     private ServerManagerViewModel serverManagerViewModel;
     public static Stage pickImageStage ;
-    public static Stage startStage ;
 
     @FXML
     public void initialize() {
         serverManagerViewModel = new ServerManagerViewModel(ServerManager.getInstance()) ;
+        serverManagerViewModel.addObserver(this);
         topLayout.getStylesheets().add(getClass().getResource("/org/example/atpprojectpartc/View/MainCSS.css").toExternalForm());
         initSlidingLayout();
+
+        startGame.setDisable(true);
     }
 
 
@@ -50,7 +53,6 @@ public class StartViewController implements Observer {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/atpprojectpartc/View/MyView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         MyViewController myViewController = fxmlLoader.getController();
-        myViewController.setStartStage(stage) ;
         stage.heightProperty().addListener((observable, oldValue, newValue) -> {
             myViewController.stageHeightChanged(newValue.doubleValue());
         });
@@ -127,7 +129,11 @@ public class StartViewController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        Change change = (Change) arg;
+        switch (change){
+            case generatingServerStarted -> {startGame.setDisable(false);}
+            case generatingServerStopped -> {startGame.setDisable(true);}
+        }
     }
 
     public void initSlidingLayout() {

@@ -11,12 +11,17 @@
 .button {
     -fx-background-color: #4285f4;
     -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
     -fx-font-size: 14px;
     -fx-padding: 8 16;
     -fx-background-radius: 6;
     -fx-cursor: hand;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
     -fx-transition: all 0.3s ease;
+}
+
+.label {
+    -fx-background-color: #FFFFFF;
 }
 
 .button:hover {

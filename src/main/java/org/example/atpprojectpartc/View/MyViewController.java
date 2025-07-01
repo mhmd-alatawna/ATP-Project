@@ -1,5 +1,7 @@
 package org.example.atpprojectpartc.View;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,10 +11,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.example.algorithms.search.MazeState;
 import org.example.atpprojectpartc.HelloApplication;
 import org.example.atpprojectpartc.Model.*;
@@ -66,10 +70,25 @@ public class MyViewController implements IView , Observer {
 
     private boolean isFirst = true ;
     private double firstDiff = -1;
-    private Stage startStage ;
+    public Label stepsLabel ;
+    public Label timeLabel ;
+    private Timeline timeline ;
+    private int seconds = 0;
+
 
     @FXML
     protected void initialize() {
+        HBox gameStats = new HBox();
+        gameStats.setPadding(new Insets(15));
+        gameStats.setAlignment(Pos.CENTER);
+        gameStats.setSpacing(10);
+        stepsLabel = new Label("Steps - 0");
+        timeLabel = new Label("Time - 00:00");
+        gameStats.getChildren().add(stepsLabel);
+        gameStats.getChildren().add(timeLabel);
+
+        topLayout.getChildren().add(gameStats) ;
+
         audioMedia = new Media(getClass().getResource("/org/example/atpprojectpartc/gameMusic.mp3").toString());
         winGameMedia = new Media(getClass().getResource("/org/example/atpprojectpartc/winGameMusic.mp3").toString());
 
@@ -126,6 +145,8 @@ public class MyViewController implements IView , Observer {
         initPropertiesMenuItems();
         initExitMenuItems();
         initSoundMenuItems();
+        initHelpMenuItems();
+        initAboutMenuItems();
     }
 
     private void initFileMenuItems(){
@@ -240,6 +261,76 @@ public class MyViewController implements IView , Observer {
         });
     }
 
+    private void initHelpMenuItems(){
+        gameRulesItem.setOnAction(action -> {
+            String rules = "Rules :\n" +
+                    "1) you may move the player via arrows\n" +
+                    "2) you may move the player via Numpad\n" +
+                    "3) you may move the player by dragging the character\n" +
+                    "4) the black tiles are walls which can't be penetrated\n" +
+                    "5) a player have the ability to move in all 4 directions\n" +
+                    "6) a player have the ability to move in all 4 diagonal directions\n" +
+                    "7) when dragging the player character , you can't pass throught walls\n" +
+                    "8) there is a timer under the game board to keep you comparative ;)\n" +
+                    "9) there is steps counter under the game board as well\n" +
+                    "10) when the game is over a window will pop with information about time and steps";
+            Stage stage = new Stage();
+            HelloApplication.allStages.add(stage);
+            VBox layout = new VBox(new Label(rules));
+            layout.setAlignment(Pos.CENTER);
+            layout.setPadding(new Insets(20));
+
+            Scene scene = new Scene(layout);
+            stage.setScene(scene);
+            stage.setTitle("Rules");
+            stage.show(); // Show the window
+        });
+    }
+
+    private void initAboutMenuItems(){
+        algorithmsItem.setOnAction(action -> {
+            String description = "Algorithms :\n" +
+                    "this application is very rich with algorithms ,from maze generators\n" +
+                    "to searching algorithms and drawing algorithms.\n" +
+                    "the user can easily switch between the algorithms via the properties\n" +
+                    "menu , there is a variety of algorithms for each task .\n" +
+                    "there are 5 possible categories :\n" +
+                    "generating algorithms , searching algorithms , player drawers , maze wall drawers\n" +
+                    "and maze solution path drawers .\n" +
+                    "the switching between the algorithms and the scalability of each category\n" +
+                    "is made possible via well engineered structure such that uses variety of \n" +
+                    "popular design patterns .\n" ;
+            Stage stage = new Stage();
+            HelloApplication.allStages.add(stage);
+            VBox layout = new VBox(new Label(description));
+            layout.setAlignment(Pos.CENTER);
+            layout.setPadding(new Insets(20));
+
+            Scene scene = new Scene(layout);
+            stage.setScene(scene);
+            stage.setTitle("Algorithms");
+            stage.show(); // Show the window
+        });
+
+        contributorsItem.setOnAction(action -> {
+            String description = "Contributors :\n" +
+                    "we are students from BGU university studying Information Systems Engineering\n" +
+                    "Mohammad Alatawna , Danial Wiesel we both are in our second year of our degrees\n" +
+                    "we are highly motivated engineers and this project was developed as a final homework\n" +
+                    "project for a course \n";
+            Stage stage = new Stage();
+            HelloApplication.allStages.add(stage);
+            VBox layout = new VBox(new Label(description));
+            layout.setAlignment(Pos.CENTER);
+            layout.setPadding(new Insets(20));
+
+            Scene scene = new Scene(layout);
+            stage.setScene(scene);
+            stage.setTitle("Algorithms");
+            stage.show(); // Show the window
+        });
+    }
+
     public void initMazeBoardGame() {
         mazeBoardGame.setMazeAndPlayer(viewModel.getMaze() , viewModel.getPlayer());
         EventHandler<ActionEvent> solveHandler = event -> {
@@ -264,13 +355,14 @@ public class MyViewController implements IView , Observer {
             public void update() {
                 MediaManager.playAudio(winGameMedia);
                 Stage newStage = new Stage(); // Create new window
-                VBox layout = new VBox(new Label("Hello from the new window!"));
+                String str = "Congratulation !! you solved the maze in " +  secondsToClock(seconds) + " , and in " + viewModel.getSteps() + " Steps !";
+                VBox layout = new VBox(new Label(str));
                 layout.setAlignment(Pos.CENTER);
                 layout.setPadding(new Insets(20));
 
-                Scene scene = new Scene(layout, MainConfigurations.getInstance().getPopWindowWidth(), MainConfigurations.getInstance().getPopWindowHeight());
+                Scene scene = new Scene(layout);
                 newStage.setScene(scene);
-                newStage.setTitle("New Window");
+                newStage.setTitle("Won");
                 newStage.show(); // Show the window
             }
         });
@@ -328,13 +420,40 @@ public class MyViewController implements IView , Observer {
     public void update(Observable o, Object arg) {
         Change change = (Change) arg;
         switch (change) {
-            case mazeGenerated -> {reDrawMaze();}
+            case mazeGenerated -> {reDrawMaze();resetParams();}
             case solutionChanged -> {solutionGenerated();}
             case playerMoved -> {updatePlayer();}
-            case mazeChanged -> {reDrawMaze();}
+            case mazeChanged -> {reDrawMaze();resetParams();}
         }
     }
 
+    private void resetParams(){
+        if(timeline != null) {
+            timeline.stop();
+            seconds = 0 ;
+            timeLabel.setText("Timer - 00:00");
+        }
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            seconds++;
+            timeLabel.setText("Timer - " + secondsToClock(seconds));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE); // keep running forever
+        timeline.play(); // start the timer
+
+        stepsLabel.setText("Steps - 0");
+    }
+
+    private String secondsToClock(int seconds){
+        int minutes = seconds / 60 ;
+        String result = "" ;
+        if(minutes < 10)
+            result += "0" ;
+        result += minutes + ":" ;
+        if(seconds < 10)
+            result += "0" ;
+        result += seconds ;
+        return result ;
+    }
     public void reDrawMaze(){
         MazeDTO mazeDTO = viewModel.getMaze() ;
         Player player = viewModel.getPlayer() ;
@@ -346,6 +465,7 @@ public class MyViewController implements IView , Observer {
     }
     public void updatePlayer(){
         mazeBoardGame.updatePlayer(viewModel.getPlayer());
+        stepsLabel.setText("Steps - " + viewModel.getSteps()) ;
     }
     public void stageHeightChanged(double height){
         if(isFirst) {
@@ -360,9 +480,5 @@ public class MyViewController implements IView , Observer {
         MazeDisplayer.rectangleWidth = (int) width / mazeColumns ;
         mazeBoardGame.resizeWidth(width);
         reDrawMaze();
-    }
-
-    public void setStartStage(Stage stage){
-        this.startStage = stage ;
     }
 }
