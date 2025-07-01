@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.atpprojectpartc.View.StartViewController" fx:id="topLayout">
+
+    <HBox>
+        <Button fx:id="startGame" text="start new maze game" onAction="#startGameAction"/>
+        <Button fx:id="manageServer" text="manage server" onAction="#manageServerAction"/>
+        <Button fx:id="pickImage" text="pick images" onAction="#pickImageAction"/>
+
+    </HBox>
+
+</VBox>
+

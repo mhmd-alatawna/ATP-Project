@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="15"
+      alignment="TOP_CENTER"
+      fx:controller="org.example.atpprojectpartc.View.ImagePickingController">
+
+    <HBox spacing="15">
+        <VBox spacing="5" alignment="TOP_CENTER">
+            <Button fx:id="pickPlayerImageButton" onAction="#pickPlayerImage"/>
+            <Label text="Player Image"/>
+        </VBox>
+
+        <VBox spacing="5" alignment="TOP_CENTER">
+            <Button fx:id="pickWallImageButton" onAction="#pickWallImage"/>
+            <Label text="Wall Image"/>
+        </VBox>
+    </HBox>
+
+    <Button text="confirm" fx:id="confirmButton" onAction="#confirm"/>
+
+</VBox>

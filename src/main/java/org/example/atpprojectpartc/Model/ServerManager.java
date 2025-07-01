@@ -1,0 +1,71 @@
+package org.example.atpprojectpartc.Model;
+
+import org.example.Server.IServerStrategy;
+import org.example.Server.Server;
+import org.example.Server.ServerStrategyGenerateMaze;
+import org.example.Server.ServerStrategySolveSearchProblem;
+import org.example.atpprojectpartc.View.MainConfigurations;
+
+import java.util.Observable;
+
+public class ServerManager extends Observable implements IServerManagerModel{
+    private Server generatingMazesServer;
+    private Server solvingMazesServer;
+    private boolean isGeneratingStarted = false ;
+    private boolean isSolvingStarted = false ;
+    private MainConfigurations config = MainConfigurations.getInstance() ;
+    private static ServerManager instance = null ;
+
+    private ServerManager() {
+        IServerStrategy generatingStrategy = new ServerStrategyGenerateMaze();
+        this.generatingMazesServer = new Server(config.getGeneratingServerPort() , config.getServerInterval() , generatingStrategy) ;
+        IServerStrategy solvingStrategy = new ServerStrategySolveSearchProblem();
+        this.solvingMazesServer = new Server(config.getSolvingServerPort() , config.getServerInterval() , solvingStrategy) ;
+    }
+
+    public static ServerManager getInstance(){
+        if(instance == null){
+            instance = new ServerManager();
+        }
+        return instance;
+    }
+
+    public void startGeneratingMazesServer() {
+        if(!isGeneratingStarted) {
+            IServerStrategy generatingStrategy = new ServerStrategyGenerateMaze();
+            this.generatingMazesServer = new Server(config.getGeneratingServerPort() , config.getServerInterval() , generatingStrategy) ;
+            new Thread(() -> {generatingMazesServer.start();}).start();
+            setChanged();
+            notifyObservers("generating server started");
+        }
+        isGeneratingStarted = true ;
+    }
+
+    public void startSolvingMazesServer() {
+        if(!isSolvingStarted) {
+            IServerStrategy solvingStrategy = new ServerStrategySolveSearchProblem();
+            this.solvingMazesServer = new Server(config.getSolvingServerPort() , config.getServerInterval() , solvingStrategy) ;
+            new Thread(() -> {solvingMazesServer.start();}).start();
+            setChanged();
+            notifyObservers("solving server started");
+        }
+        isSolvingStarted = true ;
+    }
+
+    public void stopGeneratingMazesServer() {
+        if(isGeneratingStarted) {
+            generatingMazesServer.stop();
+            setChanged();
+            notifyObservers("generating server stopped");
+        }
+        isGeneratingStarted = false ;
+    }
+    public void stopSolvingMazesServer() {
+        if(isSolvingStarted) {
+            solvingMazesServer.stop();
+            setChanged();
+            notifyObservers("solving server stopped");
+        }
+        isSolvingStarted = false ;
+    }
+}

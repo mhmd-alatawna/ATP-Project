@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" spacing="10"
+      fx:controller="org.example.atpprojectpartc.View.PropertiesWindowController">
+
+    <HBox spacing="5">
+        <Label text="Icon Size" />
+        <TextField fx:id="iconSize" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Window Width" />
+        <TextField fx:id="windowWidth" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Window Height" />
+        <TextField fx:id="windowHeight" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Pop Window Width" />
+        <TextField fx:id="popWindowWidth" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Pop Window Height" />
+        <TextField fx:id="popWindowHeight" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Thread Pool Size" />
+        <TextField fx:id="threadPoolSize" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Generating Algorithm" />
+        <ChoiceBox fx:id="generatingAlgorithm" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Searching Algorithm" />
+        <ChoiceBox fx:id="searchingAlgorithm" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Wall Drawer" />
+        <ChoiceBox fx:id="wallDrawer" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Player Drawer" />
+        <ChoiceBox fx:id="playerDrawer" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Path Drawer" />
+        <ChoiceBox fx:id="pathDrawer" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Generating ServerPort" />
+        <TextField fx:id="generatingServerPort" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Solving ServerPort" />
+        <TextField fx:id="solvingServerPort" />
+    </HBox>
+
+    <HBox spacing="5">
+        <Label text="Server Interval" />
+        <TextField fx:id="serverInterval" />
+    </HBox>
+
+    <Button text="confirm" onAction="#confirm"/>
+</VBox>
